@@ -1,0 +1,110 @@
+﻿<!doctype html>
+<html>
+<head>
+    <!-- Мета теги -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>AJAX / JQuery Demo</title>
+
+    <!-- JS CDN-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+
+    <!-- CSS CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Scripts -->
+    <script language="javascript">
+        $(document).ready(function () {
+            $("#mainButton").click(function () {
+                sendRequest();
+            });
+
+            $("#clearButton").click(function () {
+                clear();
+            });
+        });
+
+        function sendRequest() {
+            $.getJSON("http://localhost:5000/gallery", function (result) {
+                if (typeof result !== 'undefined') {
+                    process(result);
+
+                    console.log(JSON.stringify(result));
+                }
+            }).fail(function () {
+                alert("Произошла ошибка! Возможно удаленный хост недоступен.");
+            });
+        }
+
+        function process(gallery) {
+            // Очищаем содержимое
+            clear();
+
+            $('#heading').append(gallery.title);
+
+            $.each(gallery.images, function (index, value) {
+                $('#content').append('<div class="col-md-4">' +
+                    ' <div class="card mb-4 box-shadow">' +
+                    '  <img class="card-img-top" src="' + value.link + '">' +
+                    '   <div class="card-body">' +
+                    '   <h4 class="card-text text-center">' + value.name + '</h4>' +
+                    '  </div>' +
+                    '  </div>' +
+                    ' </div>');
+            });
+
+        }
+
+        function clear() {
+            $('#content').html('');
+            $('#heading').html('');
+        }
+
+    </script>
+
+    <style type="text/css">
+        .jumbotron {
+            padding-top: calc(var(--jumbotron-padding-y) * 2);
+            padding-bottom: calc(var(--jumbotron-padding-y) * 2);
+            margin-bottom: 0;
+        }
+
+            .jumbotron p:last-child {
+                margin-bottom: 0;
+            }
+
+        .jumbotron-heading {
+            font-weight: 300;
+        }
+
+        .jumbotron .container {
+            max-width: 40rem;
+        }
+
+    </style>
+</head>
+<body>
+    <main role="main">
+        <section class="jumbotron text-center" style="background: white">
+            <div class="container">
+                <h1 class="jumbotron-heading">AJAX / Jquery</h1>
+                <p class="lead text-muted">Демонстрация работы запроса и ответа с сервера</p>
+                <p>
+                    <button type="button" id="mainButton" class="btn btn-primary">Запросить данные</button>
+                    <button type="button" id="clearButton" class="btn btn-danger">Очистить</button>
+                </p>
+            </div>
+        </section>
+
+        <div class="album py-5">
+            <div class="container" id="root">
+                <h1 class="text-center" id="heading"></h1>
+                <div class="row" id="content">
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
